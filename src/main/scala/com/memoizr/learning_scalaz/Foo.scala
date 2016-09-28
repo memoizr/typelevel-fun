@@ -1,16 +1,5 @@
 package com.memoizr.learning_scalaz
 
-import com.memoizr.learning_scalaz.Bool._
-import com.memoizr.learning_scalaz.nums.Nat
-import org.scalatest.FlatSpec
-
-import scalaz._
-
-class Foo extends FlatSpec {
-  it should "dosomething" in {
-    println(toBoolean[True || False])
-  }
-}
 
 trait Recurse {
   println("recur")
@@ -37,7 +26,6 @@ object Bool {
 
   implicit val falseRep: BoolRep[False] = new BoolRep(false)
   implicit val trueRep: BoolRep[True] = new BoolRep(true)
-  implicit val maybeRep: BoolRep[Nat#Bar] = new BoolRep(true)
 
   def toBoolean[B <: Bool](implicit boolean: BoolRep[B]): Boolean = boolean.value
 }
