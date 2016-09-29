@@ -17,14 +17,14 @@ trait Cell {
 
 trait X extends Cell {
   type isX[ifX <: Bool, ifO <: Bool] = ifX
-  override type isEq[A <: Cell] = A#isX[True, False]
+  type isEq[A <: Cell] = A#isX[True, False]
   type isValid <: True
   type validate = X
 }
 
 trait O extends Cell {
   type isX[ifX <: Bool, ifO <: Bool] = ifO
-  override type isEq[A <: Cell] = A#isX[False, True]
+  type isEq[A <: Cell] = A#isX[False, True]
   type isValid <: True
   type validate = O
 }
