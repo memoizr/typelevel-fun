@@ -1,4 +1,4 @@
-package com.memoizr.learning_scalaz.nums
+package com.memoizr.nums
 
 import org.scalatest.FlatSpec
 import com.memoizr.learning_scalaz.{Bool, False, True}

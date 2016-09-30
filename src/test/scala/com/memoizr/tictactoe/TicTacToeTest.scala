@@ -1,7 +1,7 @@
-package com.memoizr.learning_scalaz.nums
+package com.memoizr.tictactoe
 
 import com.memoizr.learning_scalaz._
-import org.scalatest.{FlatSpec, FlatSpecLike, Matchers}
+import org.scalatest.{FlatSpecLike, Matchers}
 
 class TicTacToeTest extends FlatSpecLike with Matchers {
 
