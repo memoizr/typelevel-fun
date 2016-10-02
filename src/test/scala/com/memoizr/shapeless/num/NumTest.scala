@@ -47,23 +47,21 @@ class NumTest extends FlatSpecLike {
   type isDivisibleBy3[N <: Nat] = Mod.Aux[N, _3, _0]
 
   sealed trait DivisibleBy3Or5Conversion extends DefaultConversion {
-    implicit def caseBuzz[N <: Nat](implicit proveThat: isDivisibleBy5[N]) =
-      new FizzBuzzConversion[N] {
-        override type FizzBuzzType = Buzz.type
+    implicit def caseFizz[N <: Nat : isDivisibleBy3] = new FizzBuzzConversion[N] {
+      override type FizzBuzzType = Fizz.type
 
-        override def fizzBuzzType(): Buzz.type = Buzz
-      }
+      override def fizzBuzzType(): Fizz.type = Fizz
+    }
 
-    implicit def caseFizz[N <: Nat](implicit proveThat: isDivisibleBy3[N]) =
-      new FizzBuzzConversion[N] {
-        override type FizzBuzzType = Fizz.type
+    implicit def caseBuzz[N <: Nat : isDivisibleBy5] = new FizzBuzzConversion[N] {
+      override type FizzBuzzType = Buzz.type
 
-        override def fizzBuzzType(): Fizz.type = Fizz
-      }
+      override def fizzBuzzType(): Buzz.type = Buzz
+    }
   }
 
   sealed trait DivisibleByBoth3And5Conversion extends DivisibleBy3Or5Conversion {
-    implicit def caseFizzBuzz[N <: Nat](implicit proveThat: isDivisibleBy3[N], andThat: isDivisibleBy5[N]) =
+    implicit def caseFizzBuzz[N <: Nat : isDivisibleBy5 : isDivisibleBy3] =
       new FizzBuzzConversion[N] {
         override type FizzBuzzType = FizzBuzz.type
 
