@@ -13,13 +13,57 @@ class NumTest extends FlatSpec {
 
   it should "be num " in {
     println(Bool.toBoolean[Succ[_0]#Compare[_0]#gt])
+
+    println(toInt[Succ[Succ[_3]]])
+
+    println(implicitly[_0 :: _1 :: _2 :: cnil].toList)
+  }
+
+  def toInt[T <: Nat : IntRep]: Int = {
+    implicitly[IntRep[T]].int
   }
 
   class IntRep[+X <: Nat](val int: Int) {
   }
 
+  type y = _0 :: _1 :: cnil
   implicit val zeroRep: IntRep[_0] = new IntRep(0)
-  implicit val natRep: IntRep[Nat] = new IntRep(1)
+
+  implicit def nonZeroRep[i <: Nat](implicit ev: IntRep[i#Pred]): IntRep[i] = new IntRep(1 + ev.int)
+
+  implicit val nil: cnil = cnil
+  //  implicit val znil: _0 :: cnil = null
+  //  implicit val nils: clist = cnil
+  implicit val bah: _0 = new _0() {}
+  implicit val bahs: _1 = new _1() {}
+  implicit val bahsss: _2 = new _2() {}
+
+  implicit def rest[A, rest <: clist](implicit a: A, ev: rest): ::[A, rest] = cons(a, ev)
+}
+
+trait clist {
+  type tail <: clist
+  def toList: List[Any]
+}
+
+object clist {
+  def ::(x: clist) = cnil
+}
+
+trait cnil extends clist {
+  override type tail = cnil
+
+  override def toList: List[Any] = Nil
+}
+
+object cnil extends cnil
+
+trait ::[+A, b <: clist] extends clist {
+  override type tail = b
+}
+
+case class cons[A, b <: clist](a: A, b: b) extends ::[A, b] {
+  def toList: List[Any] = a :: b.toList
 }
 
 sealed trait Nat {
@@ -38,7 +82,9 @@ sealed trait _0 extends Nat {
   override type Compare[N <: Nat] = N#IsZero[LT, EQ, Comparison]
 }
 
-sealed trait Succ[N <: Nat] extends Nat {
+sealed trait NonZero
+
+sealed trait Succ[N <: Nat] extends Nat with NonZero {
   override type Bar = False
   override type Foo = False
   override type Pred = N

@@ -1,7 +1,9 @@
 package com.memoizr.shapeless.singletonliterals
 
 import org.scalatest.{FlatSpecLike, Matchers}
+import shapeless.Widen.apply1
 import shapeless._
+import shapeless.syntax.singleton.mkSingletonOps
 
 class SingletonLiteralTest extends FlatSpecLike with Matchers {
   import syntax.std.tuple._
@@ -16,8 +18,8 @@ class SingletonLiteralTest extends FlatSpecLike with Matchers {
   }
 
   "all literals" should "have a value" in {
-    23.leftSideValue shouldBe 23
-    "foo".leftSideValue shouldBe "foo"
+    23.witness.value shouldBe 23
+    "foo".witness.value shouldBe "foo"
   }
 
   val (wTrue, wFalse) = (Witness(true), Witness(false))
