@@ -1,67 +1,83 @@
 package com.memoizr.shapeless.num
 
 import org.scalatest.FlatSpecLike
-import shapeless._
-import shapeless.ops.nat.Mod.Aux
-import shapeless.ops.nat._
+import shapeless.{Nat, Poly1, the}
+import shapeless.ops.nat.{Mod, ToInt}
 import shapeless.syntax.nat.*--*
 
 class NumTest extends FlatSpecLike {
 
-  it should "count" in {
-    val three = Sum[Nat._3, Nat._3]
-    println(Nat.toInt[Succ[three.Out#N]])
-    println(Nat.toInt[Succ[Succ[_0]]])
+  import shapeless.nat._
+
+  trait FizzBuzz {
+    def value: String
   }
 
-  object helper extends Poly1 {
-
-    //    implicit def anInt[n <: Nat](implicit ev: ToInt[n]) = at[n] { x => ev.apply() }
-    //    implicit def anInt[n <: Nat](implicit ev: ToInt[n]) = at[n] { x => ev.apply() }
-
-//    type Aux[A <: Nat, B <: Nat, C <: Nat] = Sum[A, B] { type Out = C }
-//
-//    implicit def sum1[B <: Nat]: Aux[_0, B, B] = new Sum[_0, B] { type Out = B }
-//    implicit def sum2[A <: Nat, B <: Nat]
-//    (implicit sum : Sum[A, Succ[B]]): Aux[Succ[A], B, sum.Out] = new Sum[Succ[A], B] { type Out = sum.Out }
-
-//    implicit def anInt[n <: Nat](implicit one: ToInt[n],
-////                                 b: n,
-//                                 aux : Mod[n, Nat._2]#Out#N =:= Nat._0
-//                                ) = at[({type x <: Nat})#x] { x => one.apply().toString + "zero" }
-
-
-//    implicit def anInts[n <: Nat](implicit ev: n =:= Nat._1,
-//                                 one: ToInt[n],
-//                                 zero: n =:= Nat._1
-//                                ) = at[n] { x => one.apply().toString }
-
-    class Multiple2[n]
-//    implicit def foo[n <: Nat](implicit ev: Mod[n, Nat._2]#Out#N =:= Nat._0) = new Multiple2[n]
-//    implicit def defun[n <: Nat](implicit ev: n) = at[n] { x => iseven[ev.N].toString; "hey"}
-
-    //    implicit def default[n <: Nat] = at[n] { x => "zero" }
-
-    implicit def defaults[n] = at[n] { x => "x" }
+  object Buzz extends FizzBuzz {
+    override val value: String = "buzz"
   }
 
-
-  def iseven[n <: Nat](implicit mod : Mod[n, Nat._2]) = new Check[mod.Out] {}
-
-  it should "create a range" in {
-    type range = Range[_0, Succ[_0]]#Out
-    type y = Sum[Nat._2, Nat._2]#Out
-    println(the[Nat._0 *--* Nat._10].apply().map(helper))
-    //    println(Nat.toInt[x.Out])
-    //    val x = Nat.toInt[range.type]
-    val x = iseven[Nat._8]
-    println(check(0)(x))
+  object Fizz extends FizzBuzz {
+    override val value: String = "fizz"
   }
 
-  trait Check[N <: Nat]
-  def check(expected: Nat)(actually : => Check[expected.N]) {}
-
-  implicit def empty[H, T <: HList](implicit ev: HList) = {
+  object FizzBuzz extends FizzBuzz {
+    override val value: String = "fizzbuzz"
   }
 
+  class OtherFizzBuzz(val int: Int) extends FizzBuzz {
+    def value = int.toString
+  }
+
+  trait FizzBuzzConversion[N <: Nat] {
+    type FizzBuzzType <: FizzBuzz
+
+    def fizzBuzzType(): FizzBuzzType
+  }
+
+  sealed trait DefaultConversion {
+    implicit def caseNeither[N <: Nat : ToInt] = new FizzBuzzConversion[N]() {
+      override type FizzBuzzType = OtherFizzBuzz
+
+      override def fizzBuzzType(): OtherFizzBuzz = new OtherFizzBuzz(implicitly[ToInt[N]].apply())
+    }
+  }
+
+  type isDivisibleBy5[N <: Nat] = Mod.Aux[N, _5, _0]
+  type isDivisibleBy3[N <: Nat] = Mod.Aux[N, _3, _0]
+
+  sealed trait DivisibleBy3Or5Conversion extends DefaultConversion {
+    implicit def caseBuzz[N <: Nat](implicit proveThat: isDivisibleBy5[N]) =
+      new FizzBuzzConversion[N] {
+        override type FizzBuzzType = Buzz.type
+
+        override def fizzBuzzType(): Buzz.type = Buzz
+      }
+
+    implicit def caseFizz[N <: Nat](implicit proveThat: isDivisibleBy3[N]) =
+      new FizzBuzzConversion[N] {
+        override type FizzBuzzType = Fizz.type
+
+        override def fizzBuzzType(): Fizz.type = Fizz
+      }
+  }
+
+  sealed trait DivisibleByBoth3And5Conversion extends DivisibleBy3Or5Conversion {
+    implicit def caseFizzBuzz[N <: Nat](implicit proveThat: isDivisibleBy3[N], andThat: isDivisibleBy5[N]) =
+      new FizzBuzzConversion[N] {
+        override type FizzBuzzType = FizzBuzz.type
+
+        override def fizzBuzzType(): FizzBuzz.type = FizzBuzz
+      }
+  }
+
+  object FizzBuzzConversion extends DivisibleByBoth3And5Conversion
+
+  object fromNatToFizzBuzz extends Poly1 {
+    implicit def convertToFizzBuzz[N <: Nat](implicit isThereA: FizzBuzzConversion[N]) = at[N] { _ => isThereA.fizzBuzzType().value }
+  }
+
+  it should "print fizzbuzz" in {
+    the[_1 *--* _15].apply().map(fromNatToFizzBuzz).toList.foreach(println)
+  }
 }
