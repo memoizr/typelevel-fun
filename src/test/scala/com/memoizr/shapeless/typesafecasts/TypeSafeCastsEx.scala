@@ -8,8 +8,8 @@ class TypeSafeCastsEx extends FlatSpecLike with Matchers {
   import syntax.typeable._
 
   "Typeable" should "provide safe casts" in {
-    val l: Any = List(Vector("foo", "var", "baz"), Vector("wibble"))
-    l.cast[List[Vector[String]]] shouldBe Some(List(Vector("foo", "var", "baz"), Vector("wibble")))
+    val l: Any = List(Vector("foo", "bar", "baz"), Vector("wibble"))
+    l.cast[List[Vector[String]]] shouldBe Some(List(Vector("foo", "bar", "baz"), Vector("wibble")))
     l.cast[List[Vector[Int]]] shouldBe None
     l.cast[List[List[String]]] shouldBe None
   }
