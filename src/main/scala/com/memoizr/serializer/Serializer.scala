@@ -11,6 +11,7 @@ final case class JsonObject(fields: List[(String, JsonValue)]) extends JsonValue
 
 trait JsonObjectEncoder[A] extends JsonEncoder[A] {
   type Out = JsonObject
+
   override def encode(value: A): Out
 }
 
@@ -42,7 +43,7 @@ object Serializer {
     createObjectEncoder(value => hEncoder.value.encode(generic.to(value)))
 
   implicit def genericObjectEncoders[A, H <: HList](implicit generic: LabelledGeneric.Aux[A, H],
-                                                   hEncoder: Lazy[JsonObjectEncoder[H]]): JsonEncoder.Aux[A, JsonObject] =
+                                                    hEncoder: Lazy[JsonObjectEncoder[H]]): JsonEncoder.Aux[A, JsonObject] =
     createObjectEncoder(value => hEncoder.value.encode(generic.to(value)))
 
   implicit val hNilEncoder: JsonObjectEncoder[HNil] = createObjectEncoder(_ => JsonObject(Nil))
@@ -65,6 +66,7 @@ object Serializer {
 
   def createEncoder[A, B <: JsonValue](func: A => B): JsonEncoder[A] = new JsonEncoder[A] {
     override type Out = B
+
     override def encode(value: A): Out = func(value)
   }
 }

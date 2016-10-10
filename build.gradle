@@ -27,6 +27,7 @@ dependencies {
     compile "org.scalaz:scalaz-iteratee_${versions.scala_base}:${versions.scalaz}"
     compile "org.scalaz.stream:scalaz-stream_2.11:0.8"
     compile 'com.chuusai:shapeless_2.11:2.3.2'
+    compile group: 'org.typelevel', name: 'cats-core_2.11', version: '0.7.2'
 
 
     testCompile 'org.scala-lang.modules:scala-parser-combinators_2.11:1.0.2'
