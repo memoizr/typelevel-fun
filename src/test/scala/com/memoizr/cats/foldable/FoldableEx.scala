@@ -78,7 +78,7 @@ class FoldableEx extends FlatSpecLike with Matchers {
   "compose" should "compose Foldable[F[_]] with Foldable[G[_]]" in {
     val FoldableListOption = Foldable[List].compose[Option]
     FoldableListOption.fold(List(Option(1), Option(2), Option(3), Option(4))) shouldBe 10
-    FoldableListOption.fold(List(Option("1"), Option("2"), Option("3"), Option("4"))) shouldBe "1234"
+    FoldableListOption.fold(List(Option("1"), Option("2"), None , Option("4"))) shouldBe "124"
   }
 
   "other methods" should "also be a thing" in {
