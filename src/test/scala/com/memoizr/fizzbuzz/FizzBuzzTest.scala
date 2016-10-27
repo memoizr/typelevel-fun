@@ -114,7 +114,7 @@ class FizzBuzzTest extends FlatSpecLike {
 
 
   it should "print the fizzbuzz series" in {
-    val r = fizzBuzz[_15]
+    val r = fizzBuzz[_5]
     val s = r.map(FizzBuzzToString).mkString("", "\n", "")
     print(s)
   }
