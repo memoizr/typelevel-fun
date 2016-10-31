@@ -7,7 +7,7 @@ ext {
     versions = [
             scala     : '2.11.8',
             scala_base: '2.11',
-            scalaz    : '7.1.4'
+            scalaz    : '7.2.4'
     ]
 }
 
@@ -23,12 +23,16 @@ dependencies {
     compile "org.scalaz:scalaz-concurrent_${versions.scala_base}:${versions.scalaz}"
     compile "org.scalaz:scalaz-scalacheck-binding_${versions.scala_base}:${versions.scalaz}"
     compile "org.scalaz:scalaz-effect_${versions.scala_base}:${versions.scalaz}"
-    compile "org.scalaz:scalaz-typelevel_${versions.scala_base}:${versions.scalaz}"
+//    compile "org.scalaz:scalaz-typelevel_${versions.scala_base}:${versions.scalaz}"
     compile "org.scalaz:scalaz-iteratee_${versions.scala_base}:${versions.scalaz}"
     compile "org.scalaz.stream:scalaz-stream_2.11:0.8"
     compile 'com.chuusai:shapeless_2.11:2.3.2'
     compile group: 'org.typelevel', name: 'cats-core_2.11', version: '0.7.2'
 
+    compile "org.tpolecat:doobie-core-cats_2.11:0.3.1-M1"
+    compile "org.tpolecat:doobie-h2-cats_2.11:0.3.1-M1"
+
+    compile "postgresql:postgresql:9.0-801.jdbc4"
 
     testCompile 'org.scala-lang.modules:scala-parser-combinators_2.11:1.0.2'
     testCompile 'org.scalatest:scalatest_2.11:2.2.4'

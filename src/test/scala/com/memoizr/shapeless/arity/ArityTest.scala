@@ -3,8 +3,6 @@ package com.memoizr.shapeless.arity
 import org.scalatest.{FlatSpec, Matchers}
 import shapeless.Generic
 
-import scalaz.typelevel.HList
-
 class ArityTest extends FlatSpec with Matchers {
 
   "function arity" should "be abstracted to an HList" in {
