@@ -113,7 +113,7 @@ class InsertAndUpdate extends FlatSpec with BeforeAndAfterEach with Matchers {
     insertedRows shouldBe 1
     //updatedRows shouldBe 3
     person.head.age shouldBe Some(15)
-  }
+ }
 
   // RETRIEVING INFO
 
@@ -154,7 +154,7 @@ class InsertAndUpdate extends FlatSpec with BeforeAndAfterEach with Matchers {
     val data = List[PersonInfo](
       ("Frank", Some(12)),
       ("Daddy", None)
-    )
+    ).flatMap(
 
     val insertedRows = insertMany(data).transact(xa).unsafeRun
 
